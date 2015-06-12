@@ -17,35 +17,27 @@ os: Windows Server 2012 R2
 # environment variables
 environment:
   GOPATH: c:\gopath
+  CC: gcc
 
 # do not indent -ps and leave line break the way it is!
 init:
-- go version
-- ps: >-
-    $app = Get-WmiObject -Class Win32_Product -Filter "Vendor = 'http://golang.org'"
-
-    if ($app) {
-      $app.Uninstall()
-    }
 - git config --global core.autocrlf input
 
 # scripts that run after cloning repository
 install:
-  - dir c:\MinGW\bin
   - ps: |
-      curl -outfile mw64.7z "http://libgd.blob.core.windows.net/mingw/x86_64-4.9.1-release-posix-seh-rt_v3-rev1.7z";
-      if((Get-FileHash mw64.7z -Algorithm SHA1).Hash -ne "91A35AE296C1A71802AB0C7228EE57F9AAC5D7C7")
-      {
-          echo "Invalid file hash";
-          exit 1;
-      };
-      7z x -oC:\ mw64.7z | out-null;
-  - set PATH=%GOPATH%\bin;c:\go\bin;c:\MinGW\bin;%PATH%
-  - appveyor DownloadFile https://storage.googleapis.com/golang/go1.4.2.windows-amd64.msi
-  - msiexec /i go1.4.2.windows-amd64.msi /q
+      # Install MinGW
+      $url  = "http://sourceforge.net/projects/mingw-w64/files/"
+      $url += "Toolchains%20targetting%20Win64/Personal%20Builds/"
+      $url += "mingw-builds/5.1.0/threads-win32/seh/"
+      $url += "x86_64-5.1.0-release-win32-seh-rt_v4-rev0.7z/download"
+      Invoke-WebRequest -UserAgent wget -Uri $url -OutFile x86_64-5.1.0-release-win32-seh-rt_v4-rev0.7z
+      &7z x -oC:\ x86_64-5.1.0-release-win32-seh-rt_v4-rev0.7z > $null
+  - set PATH=%GOPATH%\bin;c:\go\bin;C:\mingw64\bin;%PATH%
+  - gcc -v
   - go version
   - go env
-  - mkdir c:\gopath
+  - mkdir %GOPATH%
   - go get -u golang.org/x/tools/cmd/cover
   - go get -u github.com/tischda/go2xunit
   - go get -u github.com/AllenDang/w32
