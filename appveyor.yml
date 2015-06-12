@@ -38,6 +38,7 @@ install:
   - mkdir c:\gopath
   - go get -u golang.org/x/tools/cmd/cover
   - go get -u github.com/tischda/go2xunit
+  - go get -u github.com/AllenDang/w32
   
 # to run your custom scripts instead of automatic MSBuild
 build_script:

@@ -1,4 +1,4 @@
-﻿# pokenv
+﻿# refresh
 
 Windows utility written in [Go](https://www.golang.org) to refresh
 SYSTEM environment variables.
