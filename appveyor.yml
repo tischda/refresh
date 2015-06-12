@@ -39,14 +39,14 @@ install:
   - go get -u golang.org/x/tools/cmd/cover
   - go get -u github.com/tischda/go2xunit
   - go get -u github.com/AllenDang/w32
-- ps: >-
-    curl -outfile mw64.7z "http://libgd.blob.core.windows.net/mingw/x86_64-4.9.1-release-posix-seh-rt_v3-rev1.7z";
-    if((Get-FileHash mw64.7z -Algorithm SHA1).Hash -ne "91A35AE296C1A71802AB0C7228EE57F9AAC5D7C7")
-    {
-      echo "Invalid file hash";
-      exit 1;
-    };
-    7z x -oC:\ mw64.7z | out-null;
+  - dir c:\
+  - ps: curl -outfile mw64.7z "http://libgd.blob.core.windows.net/mingw/x86_64-4.9.1-release-posix-seh-rt_v3-rev1.7z";
+  - ps: if((Get-FileHash mw64.7z -Algorithm SHA1).Hash -ne "91A35AE296C1A71802AB0C7228EE57F9AAC5D7C7")
+        {
+          echo "Invalid file hash";
+          exit 1;
+        };
+  - ps: 7z x -oC:\ mw64.7z | out-null;
   
 # to run your custom scripts instead of automatic MSBuild
 build_script:
