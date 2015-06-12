@@ -3,21 +3,19 @@
 Windows utility written in [Go](https://www.golang.org) to refresh
 SYSTEM environment variables.
 
-I tried https://support.microsoft.com/en-us/kb/104011 and restarted Explorer, it does not work for me. With `refresh`,
-applications still need to be restarted to see the variables changed, but at least I can keep my session.
+I tried https://support.microsoft.com/en-us/kb/104011 and restarted Explorer,
+it does not work for me.
 
-### Compile
+With `refresh`, applications still need to be restarted to see the variables
+changed, but at least I can keep my session.
 
-Tested with GO 1.4.2 on Windows 7.
-
-You need:
+### Install
 
 * `github.com/AllenDang/w32`
 * `gcc` from MinGW (adding `...\ruby-devkit\mingw\bin` to PATH is also fine)
 
 ~~~
-go get
-go build
+go get github.com/tischda/refresh
 ~~~
 
 ### Usage
@@ -25,7 +23,7 @@ go build
 Simply execute:
 
 ~~~
-refresh.exe
+u:\>refresh.exe
 ~~~
 
 The "Environment Variables" windows should pop up for a second and disappear.
