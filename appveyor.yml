@@ -20,6 +20,7 @@ environment:
 
 # do not indent -ps and leave line break the way it is!
 init:
+- go version
 - ps: >-
     $app = Get-WmiObject -Class Win32_Product -Filter "Vendor = 'http://golang.org'"
 
@@ -30,7 +31,7 @@ init:
 
 # scripts that run after cloning repository
 install:
-  - dir c:\
+  - dir c:\MinGW\bin
   - ps: |
       curl -outfile mw64.7z "http://libgd.blob.core.windows.net/mingw/x86_64-4.9.1-release-posix-seh-rt_v3-rev1.7z";
       if((Get-FileHash mw64.7z -Algorithm SHA1).Hash -ne "91A35AE296C1A71802AB0C7228EE57F9AAC5D7C7")
@@ -39,7 +40,7 @@ install:
           exit 1;
       };
       7z x -oC:\ mw64.7z | out-null;
-  - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;c:\MinGW\bin;%PATH%
   - appveyor DownloadFile https://storage.googleapis.com/golang/go1.4.2.windows-amd64.msi
   - msiexec /i go1.4.2.windows-amd64.msi /q
   - go version
