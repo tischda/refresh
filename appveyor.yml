@@ -20,12 +20,13 @@ environment:
 
 # do not indent -ps and leave line break the way it is!
 init:
-  - ps: |
+- ps: >-
     $app = Get-WmiObject -Class Win32_Product -Filter "Vendor = 'http://golang.org'"
+
     if ($app) {
       $app.Uninstall()
     }
-  - git config --global core.autocrlf input
+- git config --global core.autocrlf input
 
 # scripts that run after cloning repository
 install:
