@@ -11,6 +11,8 @@ changed, but at least I can keep my session.
 
 ### Install
 
+Dependencies:
+
 * `github.com/AllenDang/w32`
 * `gcc` from MinGW (adding `...\ruby-devkit\mingw\bin` to PATH is also fine)
 
