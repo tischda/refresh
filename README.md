@@ -1,4 +1,4 @@
-﻿# refresh
+﻿# refresh [![Build status](https://ci.appveyor.com/api/projects/status/ok7detq1hwnbd5cc?svg=true)](https://ci.appveyor.com/project/tischda/refresh)
 
 Windows utility written in [Go](https://www.golang.org) to refresh
 SYSTEM environment variables.
