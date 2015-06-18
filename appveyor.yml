@@ -1,29 +1,19 @@
-# version format
 version: "1.0.0-{build}"
 
-# branches to build
 branches:
-  # whitelist
   only:
     - master
 
-  # blacklist
-  except:
-    - gh-pages
-
-# Operating system (build VM template)
 os: Windows Server 2012 R2
 
-# environment variables
 environment:
   GOPATH: c:\gopath
   CC: gcc
 
-# do not indent -ps and leave line break the way it is!
 init:
-- git config --global core.autocrlf input
+  - set PATH=%GOPATH%\bin;C:\mingw64\bin;%PATH%
+  - git config --global core.autocrlf input
 
-# scripts that run after cloning repository
 install:
   - ps: |
       # Install MinGW
@@ -33,7 +23,6 @@ install:
       $url += "x86_64-5.1.0-release-win32-seh-rt_v4-rev0.7z/download"
       Invoke-WebRequest -UserAgent wget -Uri $url -OutFile x86_64-5.1.0-release-win32-seh-rt_v4-rev0.7z
       &7z x -oC:\ x86_64-5.1.0-release-win32-seh-rt_v4-rev0.7z > $null
-  - set PATH=%GOPATH%\bin;c:\go\bin;C:\mingw64\bin;%PATH%
   - gcc -v
   - go version
   - go env
@@ -42,31 +31,23 @@ install:
   - go get -u github.com/tischda/go2xunit
   - go get -u github.com/AllenDang/w32
 
-# to run your custom scripts instead of automatic MSBuild
 build_script:
-  - cd %APPVEYOR_BUILD_FOLDER%
-  - SET PATH=%GOPATH%\bin;%PATH%
   - go build -o refresh.exe
 
-# to run your custom scripts instead of automatic tests
 test_script:
   - go test -v -cover
   - go test -v | go2xunit -xunitnet > xunit-report.xml
   - refresh.exe -version
   - refresh.exe
 
-# artifacts configuration
 artifacts:
   - path: refresh.exe
     name: Refresh
 
-# to disable deployment
 deploy: off
 
-# after build failure or success
 on_finish:
 - ps: >-
     If (Test-Path .\xunit-report.xml) {
       (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-report.xml))
     }
-
