@@ -14,8 +14,6 @@ func TestMainTimer(t *testing.T) {
 	os.Args = append(os.Args, args...)
 
 	expected := fmt.Sprintf("refresh version %s\n", version)
-
-	// this can be done only once or test framework will panic
 	actual := captureOutput(main)
 
 	if expected != actual {
