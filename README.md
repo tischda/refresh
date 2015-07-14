@@ -7,7 +7,7 @@ I tried https://support.microsoft.com/en-us/kb/104011 and restarted Explorer,
 it does not work for me.
 
 With `refresh`, applications still need to be restarted to see the variables
-changed, but at least I can keep my session.
+changed, but at least I can keep my session without logging out or rebooting.
 
 ### Install
 
@@ -22,13 +22,19 @@ go get github.com/tischda/refresh
 
 ### Usage
 
-Simply execute:
+~~~
+Usage of refresh:
+  -title="Environment Variables": localized version of title
+  -version=false: print version and exit
+~~~
+
+Example (FR):
 
 ~~~
-u:\>refresh.exe
+C:\>refresh.exe -title "Variables d'environnement"
 ~~~
 
-The "Environment Variables" windows should pop up for a second and disappear.
+The "Environment Variables" window should pop up for a second and disappear.
 
 ### References
 

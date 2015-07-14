@@ -38,7 +38,6 @@ test_script:
   - go test -v -cover
   - go test -v | go2xunit -xunitnet > xunit-report.xml
   - refresh.exe -version
-  - refresh.exe
 
 artifacts:
   - path: refresh.exe
