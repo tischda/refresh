@@ -32,5 +32,5 @@ The "Environment Variables" windows should pop up for a second and disappear.
 
 ### References
 
-* http://serverfault.com/questions/33681/how-can-i-modify-a-user-s-path-environment-variable-without-logging-out?rq=1
-* http://serverfault.com/questions/8855/how-do-you-add-a-windows-environment-variable-without-rebooting
+* [How can I modify a user’s PATH environment variable without logging out?](http://serverfault.com/questions/33681/how-can-i-modify-a-user-s-path-environment-variable-without-logging-out?rq=1)
+* [How do you add a Windows environment variable without rebooting?](http://serverfault.com/questions/8855/how-do-you-add-a-windows-environment-variable-without-rebooting)
