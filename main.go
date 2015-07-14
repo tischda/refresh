@@ -57,11 +57,11 @@ func sendkey(vk uint16) {
 	var inputs []w32.INPUT
 	inputs = append(inputs, w32.INPUT{
 		Type: w32.INPUT_KEYBOARD,
-		Ki: keyPress(vk, KEYEVENTF_KEYDOWN),
+		Ki:   keyPress(vk, KEYEVENTF_KEYDOWN),
 	})
 	inputs = append(inputs, w32.INPUT{
 		Type: w32.INPUT_KEYBOARD,
-		Ki: keyPress(vk, KEYEVENTF_KEYUP),
+		Ki:   keyPress(vk, KEYEVENTF_KEYUP),
 	})
 	w32.SendInput(inputs)
 }
