@@ -6,34 +6,38 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
+	"strings"
 	"testing"
 )
 
+// Inspired by https://talks.golang.org/2014/testing.slide#23
 func TestVersion(t *testing.T) {
-	args := []string{"-version"}
-	os.Args = append(os.Args, args...)
 
+	if os.Getenv("BE_CRASHER") == "1" {
+		main()
+		return
+	}
+	cmd := exec.Command(os.Args[0], "-test.run=TestVersion", "-version")
+	cmd.Env = append(os.Environ(), "BE_CRASHER=1")
+
+	// capture output of process execution
+	r, w, _ := os.Pipe()
+	cmd.Stdout = w
+	err := cmd.Run()
+	w.Close()
+
+	// check return code
+	if e, ok := err.(*exec.ExitError); ok && !e.Success() {
+		t.Fatalf("Exptected exit status 0, but was: %v, ", err)
+	}
+
+	// now check that version is displayed
+	captured, _ := ioutil.ReadAll(r)
+	actual := string(captured)
 	expected := fmt.Sprintf("refresh version %s\n", version)
-	actual := captureOutput(main)
 
-	if expected != actual {
+	if !strings.Contains(actual, expected) {
 		t.Errorf("Expected: %s, but was: %s", expected, actual)
 	}
-}
-
-// captures Stdout and returns output of function f()
-func captureOutput(f func()) string {
-	// redirect output
-	old := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	f()
-
-	// reset output again
-	w.Close()
-	os.Stdout = old
-
-	captured, _ := ioutil.ReadAll(r)
-	return string(captured)
 }

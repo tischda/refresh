@@ -5,12 +5,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/AllenDang/w32"
 	"log"
 	"os/exec"
 	"syscall"
 	"time"
 	"unsafe"
+
+	"github.com/AllenDang/w32"
 )
 
 const version string = "1.1.0"
