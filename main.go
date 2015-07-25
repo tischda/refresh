@@ -18,10 +18,15 @@ import (
 // go build -ldflags "-x main.version $(git describe --tags)"
 var version string
 
-var moduser32 = syscall.NewLazyDLL("user32.dll")
+var (
+	moduser32 = syscall.NewLazyDLL("user32.dll")
 
-// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx
-var procFindWindowW = moduser32.NewProc("FindWindowW")
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx
+	procFindWindowW = moduser32.NewProc("FindWindowW")
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633539(v=vs.85).aspx
+	procSetForegroundWindow = moduser32.NewProc("SetForegroundWindow")
+)
 
 const (
 	KEYEVENTF_KEYDOWN = 0
@@ -50,7 +55,9 @@ func main() {
 			log.Fatal("exec.Command:", err)
 		}
 		time.Sleep(STARTUP_DELAY)
-		findWindow(panelTitle)
+		hwnd := findWindow(panelTitle)
+		setForeground(hwnd)
+		time.Sleep(STARTUP_DELAY)
 		sendkey(w32.VK_RETURN)
 	}
 }
@@ -85,4 +92,11 @@ func findWindow(title string) w32.HWND {
 		log.Fatalln("Cannot find window:", title)
 	}
 	return w32.HWND(ret)
+}
+
+func setForeground(hwnd w32.HWND) {
+	ret, _, _ := procSetForegroundWindow.Call(uintptr(hwnd))
+	if ret != 1 {
+		log.Fatalln("Could not set window to foreground")
+	}
 }
