@@ -32,7 +32,7 @@ install:
   - go get -u github.com/AllenDang/w32
 
 build_script:
-  - go build -ldflags "-s" -o refresh.exe
+  - build.bat
 
 test_script:
   - refresh.exe -version
