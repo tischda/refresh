@@ -32,12 +32,12 @@ install:
   - go get -u github.com/AllenDang/w32
 
 build_script:
-  - go build -o refresh.exe
+  - go build -ldflags "-s" -o refresh.exe
 
 test_script:
+  - refresh.exe -version
   - go test -v -cover
   - go test -v | go2xunit -xunitnet > xunit-report.xml
-  - refresh.exe -version
 
 artifacts:
   - path: refresh.exe
