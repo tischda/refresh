@@ -3,12 +3,12 @@
 ##### refresh 1.2.0 - (26 July 2015)
 
     * Fixed keys not sent correctly
-    * Added -delay to specify delay before sending keys
+    * Added `-delay` to specify delay before sending keys
     * Removed dependencies to `github.com/AllenDang/w32` and `gcc`
 
 ##### refresh 1.1.0 - (14 July 2015)
 
-    * Added -title option to specify window title for localized versions of windows
+    * Added `-title` option to specify window title for localized versions of windows
     * Cleaned up code
     * Note: this version is broken (forgot to send KEYEVENTF_KEYUP)
 
