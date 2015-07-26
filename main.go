@@ -23,15 +23,12 @@ var (
 
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx
 	procFindWindowW = moduser32.NewProc("FindWindowW")
-
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633539(v=vs.85).aspx
-	procSetForegroundWindow = moduser32.NewProc("SetForegroundWindow")
 )
 
 const (
 	KEYEVENTF_KEYDOWN = 0
 	KEYEVENTF_KEYUP   = 0x0002
-	STARTUP_DELAY     = 100 * time.Millisecond
+	SENDKEYS_DELAY    = 100 * time.Millisecond
 )
 
 var showVersion bool
@@ -54,10 +51,8 @@ func main() {
 		if err != nil {
 			log.Fatal("exec.Command:", err)
 		}
-		time.Sleep(STARTUP_DELAY)
-		hwnd := findWindow(panelTitle)
-		setForeground(hwnd)
-		time.Sleep(STARTUP_DELAY)
+		time.Sleep(SENDKEYS_DELAY)
+		findWindow(panelTitle)
 		sendkey(w32.VK_RETURN)
 	}
 }
@@ -80,23 +75,28 @@ func keyPress(vk uint16, event uint32) w32.KEYBDINPUT {
 	return w32.KEYBDINPUT{
 		WVk:         vk,
 		WScan:       0,
-		DwFlags:     KEYEVENTF_KEYUP,
+		DwFlags:     event,
 		Time:        0,
 		DwExtraInfo: 0,
 	}
 }
 
+// shorter version of: http://play.golang.org/p/kwfYDhhiqk
+// see: https://github.com/vevix/twitch-plays/blob/master/win32/win32.go#L23
 func findWindow(title string) w32.HWND {
-	ret, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(title))))
+	ret, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(StringToUTF16Ptr(title))))
 	if ret == 0 {
 		log.Fatalln("Cannot find window:", title)
 	}
 	return w32.HWND(ret)
 }
 
-func setForeground(hwnd w32.HWND) {
-	ret, _, _ := procSetForegroundWindow.Call(uintptr(hwnd))
-	if ret != 1 {
-		log.Fatalln("Could not set window to foreground")
+// https://golang.org/src/syscall/syscall_windows.go
+// syscall.StringToUTF16Ptr is deprecated, this is our own:
+func StringToUTF16Ptr(s string) *uint16 {
+	a, err := syscall.UTF16FromString(s)
+	if err != nil {
+		log.Fatalln("syscall: string with NUL passed to StringToUTF16")
 	}
+	return &a[0]
 }
