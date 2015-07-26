@@ -11,7 +11,9 @@ changed, but at least I can keep my session without logging out or rebooting.
 
 ### Install
 
-There are no dependencies.
+Dependencies:
+
+* `gcc` from MinGW (adding `...\ruby-devkit\mingw\bin` to PATH is also fine)
 
 ~~~
 go get github.com/tischda/refresh
