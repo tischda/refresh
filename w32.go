@@ -68,7 +68,7 @@ func sendKey(vk uint16) {
 		uintptr(unsafe.Pointer(&inputs[0])),
 
 		// Specifies the size, in bytes, of an INPUT structure. If cbSize is not
-		// the size of an INPUT structure, the function will fail
+		// the size of an INPUT structure, the function will fail.
 		//
 		// uintptr(unsafe.Sizeof(C.INPUT{})),
 		//
@@ -77,7 +77,7 @@ func sendKey(vk uint16) {
 	)
 	count := int(ret)
 	if count != len(inputs) {
-		log.Fatalln("Expected count of inputs sent: %d, but was: %d", len(inputs), count)
+		log.Fatalln("Sent %d keys, should have: %d", len(inputs), count)
 	}
 }
 
@@ -96,7 +96,7 @@ func findWindow(title string) HWND {
 func StringToUTF16Ptr(s string) *uint16 {
 	a, err := syscall.UTF16FromString(s)
 	if err != nil {
-		log.Fatalln("syscall: string with NUL passed to StringToUTF16")
+		log.Fatalln("String with NULL passed to StringToUTF16")
 	}
 	return &a[0]
 }

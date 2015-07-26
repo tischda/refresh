@@ -11,9 +11,7 @@ changed, but at least I can keep my session without logging out or rebooting.
 
 ### Install
 
-Dependencies:
-
-* `gcc` from MinGW (adding `...\ruby-devkit\mingw\bin` to PATH is also fine)
+There are no dependencies.
 
 ~~~
 go get github.com/tischda/refresh
@@ -22,18 +20,19 @@ go get github.com/tischda/refresh
 ### Usage
 
 ~~~
-Usage of refresh:
+Usage of refresh.exe:
+  -delay=20ms: Delays in milliseconds before sending VK_RETURN
   -title="Environment Variables": localized version of title
   -version=false: print version and exit
 ~~~
 
-Example (FR):
+Example (FR: mind the apostrophe, it's not a single quote!):
 
 ~~~
-C:\>refresh.exe -title "Variables d'environnement"
+C:\>refresh.exe -title "Variables d’environnement"
 ~~~
 
-The "Environment Variables" window should pop up for a second and disappear.
+The "Environment Variables" window should pop up for a short time and disappear.
 
 ### References
 
