@@ -11,8 +11,6 @@ for /f "delims=" %%a in ('git describe --tags') do @set version=%%a
 
 rem doc says not to use -s to remove the debug info read by gdb
 rem but https://github.com/golang/go/issues/6245 says it's fixed
-go build -ldflags "-X main.version %version% -s"
-
-rem go build -race -ldflags "-X main.version %version% -s"
+go build -race -ldflags "-X main.version %version% -s"
 
 endlocal
