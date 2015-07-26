@@ -17,6 +17,8 @@ var version string
 var showVersion bool
 var panelTitle string
 
+const SENDKEYS_DELAY = 100 * time.Millisecond
+
 func init() {
 	flag.BoolVar(&showVersion, "version", false, "print version and exit")
 	flag.StringVar(&panelTitle, "title", "Environment Variables", "localized version of title")

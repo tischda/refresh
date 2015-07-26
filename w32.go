@@ -1,5 +1,7 @@
 package main
 
+// Code inspired by "github.com/AllenDang/w32"
+
 // Cgo recognizes the comment above the import statement... these are used as
 // a header when compiling the C parts of the package. In this case those
 // lines are just a single #include statement, but they can be almost any C code.
@@ -9,11 +11,8 @@ import (
 	"C"
 	"log"
 	"syscall"
-	"time"
 	"unsafe"
 )
-
-type HWND uintptr
 
 var (
 	moduser32 = syscall.NewLazyDLL("user32.dll")
@@ -26,18 +25,43 @@ var (
 )
 
 const (
-	INPUT_KEYBOARD    = 1
+	// Input type, see: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
+	INPUT_KEYBOARD = 1
+
+	// Virtual-Key Codes, see: https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
+	VK_RETURN = 0x0D
+
+	// Event types: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx
 	KEYEVENTF_KEYDOWN = 0
 	KEYEVENTF_KEYUP   = 0x0002
-	SENDKEYS_DELAY    = 100 * time.Millisecond
 )
 
-// extract copied from "github.com/AllenDang/w32"
+type HWND uintptr
 
-// Virtual-Key Codes
-const (
-	VK_RETURN = 0x0D
-)
+// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
+type INPUT struct {
+	Type uint32
+	Ki   KEYBDINPUT
+}
+
+// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx
+type KEYBDINPUT struct {
+	WVk         uint16
+	WScan       uint16
+	DwFlags     uint32
+	Time        uint32
+	DwExtraInfo uintptr
+}
+
+func keyPress(vk uint16, event uint32) KEYBDINPUT {
+	return KEYBDINPUT{
+		WVk:         vk,
+		WScan:       0,
+		DwFlags:     event,
+		Time:        0,
+		DwExtraInfo: 0,
+	}
+}
 
 // Inspired by http://play.golang.org/p/kwfYDhhiqk
 func sendKey(vk uint16) {
@@ -55,35 +79,10 @@ func sendKey(vk uint16) {
 		uintptr(unsafe.Pointer(&inputs[0])),
 		uintptr(unsafe.Sizeof(C.INPUT{})),
 	)
-	count := uint32(ret)
-	if count != uint32(len(inputs)) {
-		log.Fatalln("Expected number of key inputs sent: %d, but was: %d", len(inputs), count)
+	count := int(ret)
+	if count != len(inputs) {
+		log.Fatalln("Expected count of inputs sent: %d, but was: %d", len(inputs), count)
 	}
-}
-
-func keyPress(vk uint16, event uint32) KEYBDINPUT {
-	return KEYBDINPUT{
-		WVk:         vk,
-		WScan:       0,
-		DwFlags:     event,
-		Time:        0,
-		DwExtraInfo: 0,
-	}
-}
-
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
-type INPUT struct {
-	Type uint32
-	Ki   KEYBDINPUT
-}
-
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx
-type KEYBDINPUT struct {
-	WVk         uint16
-	WScan       uint16
-	DwFlags     uint32
-	Time        uint32
-	DwExtraInfo uintptr
 }
 
 // shorter version of: http://play.golang.org/p/kwfYDhhiqk
