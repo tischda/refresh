@@ -1,12 +1,6 @@
 package main
 
-// Code inspired by "github.com/AllenDang/w32"
-
-// Cgo recognizes the comment above the import statement... these are used as
-// a header when compiling the C parts of the package. In this case those
-// lines are just a single #include statement, but they can be almost any C code.
 import (
-	"C"
 	"log"
 	"syscall"
 	"unsafe"
@@ -51,7 +45,7 @@ type KEYBDINPUT struct {
 	DwExtraInfo uintptr
 }
 
-// Inspired by http://play.golang.org/p/kwfYDhhiqk
+// Inspired by http://play.golang.org/p/kwfYDhhiqk and "github.com/AllenDang/w32"
 func sendKey(vk uint16) {
 	var inputs []INPUT
 	inputs = append(inputs, INPUT{
