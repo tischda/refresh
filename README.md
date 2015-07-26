@@ -21,7 +21,7 @@ go get github.com/tischda/refresh
 
 ~~~
 Usage of refresh.exe:
-  -delay=40ms: Delays in milliseconds before sending VK_RETURN
+  -delay=100ms: Delays in milliseconds before sending VK_RETURN
   -title="Environment Variables": localized version of title
   -version=false: print version and exit
 ~~~

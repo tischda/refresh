@@ -22,7 +22,7 @@ var sendDelay time.Duration
 func init() {
 	flag.BoolVar(&showVersion, "version", false, "print version and exit")
 	flag.StringVar(&panelTitle, "title", "Environment Variables", "localized version of title")
-	flag.DurationVar(&sendDelay, "delay", 40*time.Millisecond, "Delays in milliseconds before sending VK_RETURN")
+	flag.DurationVar(&sendDelay, "delay", 100*time.Millisecond, "Delays in milliseconds before sending VK_RETURN")
 }
 
 func main() {
