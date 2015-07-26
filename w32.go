@@ -53,26 +53,16 @@ type KEYBDINPUT struct {
 	DwExtraInfo uintptr
 }
 
-func keyPress(vk uint16, event uint32) KEYBDINPUT {
-	return KEYBDINPUT{
-		WVk:         vk,
-		WScan:       0,
-		DwFlags:     event,
-		Time:        0,
-		DwExtraInfo: 0,
-	}
-}
-
 // Inspired by http://play.golang.org/p/kwfYDhhiqk
 func sendKey(vk uint16) {
 	var inputs []INPUT
 	inputs = append(inputs, INPUT{
 		Type: INPUT_KEYBOARD,
-		Ki:   keyPress(vk, KEYEVENTF_KEYDOWN),
+		Ki:   KEYBDINPUT{WVk: vk, DwFlags: KEYEVENTF_KEYDOWN},
 	})
 	inputs = append(inputs, INPUT{
 		Type: INPUT_KEYBOARD,
-		Ki:   keyPress(vk, KEYEVENTF_KEYUP),
+		Ki:   KEYBDINPUT{WVk: vk, DwFlags: KEYEVENTF_KEYUP},
 	})
 	ret, _, _ := procSendInput.Call(
 		uintptr(len(inputs)),
