@@ -3,6 +3,7 @@
 package main
 
 import (
+	"C"
 	"flag"
 	"fmt"
 	"log"
@@ -10,8 +11,6 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
-
-	"github.com/AllenDang/w32"
 )
 
 // http://technosophos.com/2014/06/11/compile-time-string-in-go.html
@@ -23,6 +22,9 @@ var (
 
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx
 	procFindWindowW = moduser32.NewProc("FindWindowW")
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646310(v=vs.85).aspx
+	procSendInput = moduser32.NewProc("SendInput")
 )
 
 const (
@@ -53,26 +55,26 @@ func main() {
 		}
 		time.Sleep(SENDKEYS_DELAY)
 		findWindow(panelTitle)
-		sendkey(w32.VK_RETURN)
+		sendkey(VK_RETURN)
 	}
 }
 
 // Inspired by http://play.golang.org/p/kwfYDhhiqk
 func sendkey(vk uint16) {
-	var inputs []w32.INPUT
-	inputs = append(inputs, w32.INPUT{
-		Type: w32.INPUT_KEYBOARD,
+	var inputs []INPUT
+	inputs = append(inputs, INPUT{
+		Type: INPUT_KEYBOARD,
 		Ki:   keyPress(vk, KEYEVENTF_KEYDOWN),
 	})
-	inputs = append(inputs, w32.INPUT{
-		Type: w32.INPUT_KEYBOARD,
+	inputs = append(inputs, INPUT{
+		Type: INPUT_KEYBOARD,
 		Ki:   keyPress(vk, KEYEVENTF_KEYUP),
 	})
-	w32.SendInput(inputs)
+	SendInput(inputs)
 }
 
-func keyPress(vk uint16, event uint32) w32.KEYBDINPUT {
-	return w32.KEYBDINPUT{
+func keyPress(vk uint16, event uint32) KEYBDINPUT {
+	return KEYBDINPUT{
 		WVk:         vk,
 		WScan:       0,
 		DwFlags:     event,
@@ -83,12 +85,12 @@ func keyPress(vk uint16, event uint32) w32.KEYBDINPUT {
 
 // shorter version of: http://play.golang.org/p/kwfYDhhiqk
 // see: https://github.com/vevix/twitch-plays/blob/master/win32/win32.go#L23
-func findWindow(title string) w32.HWND {
+func findWindow(title string) HWND {
 	ret, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(StringToUTF16Ptr(title))))
 	if ret == 0 {
 		log.Fatalln("Cannot find window:", title)
 	}
-	return w32.HWND(ret)
+	return HWND(ret)
 }
 
 // https://golang.org/src/syscall/syscall_windows.go

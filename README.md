@@ -13,7 +13,6 @@ changed, but at least I can keep my session without logging out or rebooting.
 
 Dependencies:
 
-* `github.com/AllenDang/w32`
 * `gcc` from MinGW (adding `...\ruby-devkit\mingw\bin` to PATH is also fine)
 
 ~~~
