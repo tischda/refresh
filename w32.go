@@ -6,8 +6,6 @@ package main
 // a header when compiling the C parts of the package. In this case those
 // lines are just a single #include statement, but they can be almost any C code.
 import (
-	// #include <wtypes.h>
-	// #include <winable.h>
 	"C"
 	"log"
 	"syscall"
@@ -64,10 +62,18 @@ func sendKey(vk uint16) {
 		Type: INPUT_KEYBOARD,
 		Ki:   KEYBDINPUT{WVk: vk, DwFlags: KEYEVENTF_KEYUP},
 	})
+
 	ret, _, _ := procSendInput.Call(
 		uintptr(len(inputs)),
 		uintptr(unsafe.Pointer(&inputs[0])),
-		uintptr(unsafe.Sizeof(C.INPUT{})),
+
+		// Specifies the size, in bytes, of an INPUT structure. If cbSize is not
+		// the size of an INPUT structure, the function will fail
+		//
+		// uintptr(unsafe.Sizeof(C.INPUT{})),
+		//
+		// Size of keyboard input structure never changes, let's hard-code this:
+		uintptr(40),
 	)
 	count := int(ret)
 	if count != len(inputs) {
