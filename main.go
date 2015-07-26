@@ -3,35 +3,16 @@
 package main
 
 import (
-	"C"
 	"flag"
 	"fmt"
 	"log"
 	"os/exec"
-	"syscall"
 	"time"
-	"unsafe"
 )
 
 // http://technosophos.com/2014/06/11/compile-time-string-in-go.html
 // go build -ldflags "-x main.version $(git describe --tags)"
 var version string
-
-var (
-	moduser32 = syscall.NewLazyDLL("user32.dll")
-
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx
-	procFindWindowW = moduser32.NewProc("FindWindowW")
-
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646310(v=vs.85).aspx
-	procSendInput = moduser32.NewProc("SendInput")
-)
-
-const (
-	KEYEVENTF_KEYDOWN = 0
-	KEYEVENTF_KEYUP   = 0x0002
-	SENDKEYS_DELAY    = 100 * time.Millisecond
-)
 
 var showVersion bool
 var panelTitle string
@@ -55,50 +36,6 @@ func main() {
 		}
 		time.Sleep(SENDKEYS_DELAY)
 		findWindow(panelTitle)
-		sendkey(VK_RETURN)
+		sendKey(VK_RETURN)
 	}
-}
-
-// Inspired by http://play.golang.org/p/kwfYDhhiqk
-func sendkey(vk uint16) {
-	var inputs []INPUT
-	inputs = append(inputs, INPUT{
-		Type: INPUT_KEYBOARD,
-		Ki:   keyPress(vk, KEYEVENTF_KEYDOWN),
-	})
-	inputs = append(inputs, INPUT{
-		Type: INPUT_KEYBOARD,
-		Ki:   keyPress(vk, KEYEVENTF_KEYUP),
-	})
-	SendInput(inputs)
-}
-
-func keyPress(vk uint16, event uint32) KEYBDINPUT {
-	return KEYBDINPUT{
-		WVk:         vk,
-		WScan:       0,
-		DwFlags:     event,
-		Time:        0,
-		DwExtraInfo: 0,
-	}
-}
-
-// shorter version of: http://play.golang.org/p/kwfYDhhiqk
-// see: https://github.com/vevix/twitch-plays/blob/master/win32/win32.go#L23
-func findWindow(title string) HWND {
-	ret, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(StringToUTF16Ptr(title))))
-	if ret == 0 {
-		log.Fatalln("Cannot find window:", title)
-	}
-	return HWND(ret)
-}
-
-// https://golang.org/src/syscall/syscall_windows.go
-// syscall.StringToUTF16Ptr is deprecated, this is our own:
-func StringToUTF16Ptr(s string) *uint16 {
-	a, err := syscall.UTF16FromString(s)
-	if err != nil {
-		log.Fatalln("syscall: string with NUL passed to StringToUTF16")
-	}
-	return &a[0]
 }

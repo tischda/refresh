@@ -29,7 +29,6 @@ install:
   - mkdir %GOPATH%
   - go get -u golang.org/x/tools/cmd/cover
   - go get -u github.com/tischda/go2xunit
-  - go get -u github.com/AllenDang/w32
 
 build_script:
   - build.bat

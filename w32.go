@@ -7,10 +7,29 @@ import (
 	// #include <wtypes.h>
 	// #include <winable.h>
 	"C"
+	"log"
+	"syscall"
+	"time"
 	"unsafe"
 )
 
 type HWND uintptr
+
+var (
+	moduser32 = syscall.NewLazyDLL("user32.dll")
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499(v=vs.85).aspx
+	procFindWindowW = moduser32.NewProc("FindWindowW")
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms646310(v=vs.85).aspx
+	procSendInput = moduser32.NewProc("SendInput")
+)
+
+const (
+	KEYEVENTF_KEYDOWN = 0
+	KEYEVENTF_KEYUP   = 0x0002
+	SENDKEYS_DELAY    = 100 * time.Millisecond
+)
 
 // extract copied from "github.com/AllenDang/w32"
 
@@ -19,23 +38,37 @@ const (
 	VK_RETURN = 0x0D
 )
 
+// Inspired by http://play.golang.org/p/kwfYDhhiqk
+func sendKey(vk uint16) {
+	var inputs []INPUT
+	inputs = append(inputs, INPUT{
+		Type: INPUT_KEYBOARD,
+		Ki:   keyPress(vk, KEYEVENTF_KEYDOWN),
+	})
+	inputs = append(inputs, INPUT{
+		Type: INPUT_KEYBOARD,
+		Ki:   keyPress(vk, KEYEVENTF_KEYUP),
+	})
+	SendInput(inputs)
+}
+
+func keyPress(vk uint16, event uint32) KEYBDINPUT {
+	return KEYBDINPUT{
+		WVk:         vk,
+		WScan:       0,
+		DwFlags:     event,
+		Time:        0,
+		DwExtraInfo: 0,
+	}
+}
+
 func SendInput(inputs []INPUT) uint32 {
 	var validInputs []C.INPUT
 
 	for _, oneInput := range inputs {
 		input := C.INPUT{_type: C.DWORD(oneInput.Type)}
 
-		switch oneInput.Type {
-		case INPUT_MOUSE:
-			(*MouseInput)(unsafe.Pointer(&input)).mi = oneInput.Mi
-		case INPUT_KEYBOARD:
-			(*KbdInput)(unsafe.Pointer(&input)).ki = oneInput.Ki
-		case INPUT_HARDWARE:
-			(*HardwareInput)(unsafe.Pointer(&input)).hi = oneInput.Hi
-		default:
-			panic("unkown type")
-		}
-
+		(*KbdInput)(unsafe.Pointer(&input)).ki = oneInput.Ki
 		validInputs = append(validInputs, input)
 	}
 
@@ -48,27 +81,13 @@ func SendInput(inputs []INPUT) uint32 {
 }
 
 const (
-	INPUT_MOUSE    = 0
 	INPUT_KEYBOARD = 1
-	INPUT_HARDWARE = 2
 )
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
 type INPUT struct {
 	Type uint32
-	Mi   MOUSEINPUT
 	Ki   KEYBDINPUT
-	Hi   HARDWAREINPUT
-}
-
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646273(v=vs.85).aspx
-type MOUSEINPUT struct {
-	Dx          int32
-	Dy          int32
-	MouseData   uint32
-	DwFlags     uint32
-	Time        uint32
-	DwExtraInfo uintptr
 }
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx
@@ -80,24 +99,27 @@ type KEYBDINPUT struct {
 	DwExtraInfo uintptr
 }
 
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ms646269(v=vs.85).aspx
-type HARDWAREINPUT struct {
-	UMsg    uint32
-	WParamL uint16
-	WParamH uint16
-}
-
 type KbdInput struct {
 	typ uint32
 	ki  KEYBDINPUT
 }
 
-type MouseInput struct {
-	typ uint32
-	mi  MOUSEINPUT
+// shorter version of: http://play.golang.org/p/kwfYDhhiqk
+// see: https://github.com/vevix/twitch-plays/blob/master/win32/win32.go#L23
+func findWindow(title string) HWND {
+	ret, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(StringToUTF16Ptr(title))))
+	if ret == 0 {
+		log.Fatalln("Cannot find window:", title)
+	}
+	return HWND(ret)
 }
 
-type HardwareInput struct {
-	typ uint32
-	hi  HARDWAREINPUT
+// https://golang.org/src/syscall/syscall_windows.go
+// syscall.StringToUTF16Ptr is deprecated, this is our own:
+func StringToUTF16Ptr(s string) *uint16 {
+	a, err := syscall.UTF16FromString(s)
+	if err != nil {
+		log.Fatalln("syscall: string with NUL passed to StringToUTF16")
+	}
+	return &a[0]
 }
