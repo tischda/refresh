@@ -63,18 +63,9 @@ func keyPress(vk uint16, event uint32) KEYBDINPUT {
 }
 
 func SendInput(inputs []INPUT) uint32 {
-	var validInputs []C.INPUT
-
-	for _, oneInput := range inputs {
-		input := C.INPUT{_type: C.DWORD(oneInput.Type)}
-
-		(*KbdInput)(unsafe.Pointer(&input)).ki = oneInput.Ki
-		validInputs = append(validInputs, input)
-	}
-
 	ret, _, _ := procSendInput.Call(
-		uintptr(len(validInputs)),
-		uintptr(unsafe.Pointer(&validInputs[0])),
+		uintptr(len(inputs)),
+		uintptr(unsafe.Pointer(&inputs[0])),
 		uintptr(unsafe.Sizeof(C.INPUT{})),
 	)
 	return uint32(ret)
@@ -97,11 +88,6 @@ type KEYBDINPUT struct {
 	DwFlags     uint32
 	Time        uint32
 	DwExtraInfo uintptr
-}
-
-type KbdInput struct {
-	typ uint32
-	ki  KEYBDINPUT
 }
 
 // shorter version of: http://play.golang.org/p/kwfYDhhiqk
