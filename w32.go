@@ -26,6 +26,7 @@ var (
 )
 
 const (
+	INPUT_KEYBOARD    = 1
 	KEYEVENTF_KEYDOWN = 0
 	KEYEVENTF_KEYUP   = 0x0002
 	SENDKEYS_DELAY    = 100 * time.Millisecond
@@ -49,7 +50,15 @@ func sendKey(vk uint16) {
 		Type: INPUT_KEYBOARD,
 		Ki:   keyPress(vk, KEYEVENTF_KEYUP),
 	})
-	SendInput(inputs)
+	ret, _, _ := procSendInput.Call(
+		uintptr(len(inputs)),
+		uintptr(unsafe.Pointer(&inputs[0])),
+		uintptr(unsafe.Sizeof(C.INPUT{})),
+	)
+	count := uint32(ret)
+	if count != uint32(len(inputs)) {
+		log.Fatalln("Expected number of key inputs sent: %d, but was: %d", len(inputs), count)
+	}
 }
 
 func keyPress(vk uint16, event uint32) KEYBDINPUT {
@@ -61,19 +70,6 @@ func keyPress(vk uint16, event uint32) KEYBDINPUT {
 		DwExtraInfo: 0,
 	}
 }
-
-func SendInput(inputs []INPUT) uint32 {
-	ret, _, _ := procSendInput.Call(
-		uintptr(len(inputs)),
-		uintptr(unsafe.Pointer(&inputs[0])),
-		uintptr(unsafe.Sizeof(C.INPUT{})),
-	)
-	return uint32(ret)
-}
-
-const (
-	INPUT_KEYBOARD = 1
-)
 
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms646270(v=vs.85).aspx
 type INPUT struct {
