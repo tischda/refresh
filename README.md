@@ -9,6 +9,8 @@ it does not work for me.
 With `refresh`, applications still need to be restarted to see the variables
 changed, but at least I can keep my session without logging out or rebooting.
 
+**This utility does NOT work with Windows 10**.
+
 ### Install
 
 There are no dependencies.
