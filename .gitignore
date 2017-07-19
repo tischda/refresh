@@ -1,0 +1,4 @@
+﻿vendor/**/
+coverage.out
+refresh
+refresh.exe

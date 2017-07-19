@@ -1,5 +1,9 @@
 ## Changelog
 
+##### refresh 1.3.0 - (19 July 2017)
+
+    * Replaced windows pop-up by sending WM_SETTINGCHANGED instead
+
 ##### refresh 1.2.0 - (26 July 2015)
 
     * Fixed keys not sent correctly
