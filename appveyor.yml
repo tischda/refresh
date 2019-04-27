@@ -12,7 +12,7 @@ environment:
     - GOROOT: c:\go112
 
 init:
-  - set PATH=%GOPATH%\bin;C:\mingw64\bin;%PATH%
+  - set PATH=%GOROOT%\bin;%GOPATH%\bin;C:\mingw64\bin;%PATH%
   - git config --global core.autocrlf input
 
 install:
