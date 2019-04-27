@@ -24,6 +24,7 @@ const (
 	WM_SETTINGCHANGE = WM_WININICHANGE
 
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms644952(v=vs.85).aspx
+	SMTO_NORMAL      = 0x0000
 	SMTO_ABORTIFHUNG = 0x0002
 )
 

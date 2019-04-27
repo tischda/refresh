@@ -27,13 +27,14 @@ func main() {
 		fmt.Printf("%s version %s\n", name, version)
 	} else {
 		ret := SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
-			uintptr(unsafe.Pointer(StringToUTF16Ptr("Environment"))), SMTO_ABORTIFHUNG, 5000)
+			uintptr(unsafe.Pointer(StringToUTF16Ptr("Environment"))), SMTO_NORMAL|SMTO_ABORTIFHUNG, 5000)
 
-		// If the function succeeds, the return value is nonzero.
+		// If the function succeeds, the return value is nonzero
 		if ret == 0 {
 			fmt.Println("Refresh: Error")
 			os.Exit(1)
 		} else {
+			// FIXME: printing something here creates a data race
 			fmt.Println("Refresh: Success")
 		}
 	}

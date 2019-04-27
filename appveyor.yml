@@ -7,6 +7,11 @@ os: Windows Server 2012 R2
 environment:
   GOPATH: c:\gopath
 
+stack:
+  - go 1.10
+  - go 1.11
+  - go 1.12
+
 init:
   - set PATH=%GOPATH%\bin;C:\mingw64\bin;%PATH%
   - git config --global core.autocrlf input
