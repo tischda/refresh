@@ -11,7 +11,7 @@ import (
 )
 
 var version string
-var name string = "refresh"
+var name = "refresh"
 
 var showVersion bool
 
