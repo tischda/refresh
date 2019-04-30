@@ -5,12 +5,13 @@ package main
 import (
 	"log"
 	"syscall"
+	"unsafe"
 )
 
 var (
 	moduser32 = syscall.NewLazyDLL("user32.dll")
 
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/ms644952(v=vs.85).aspx
+	// https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-sendmessagetimeoutw
 	procSendMessageTimeout = moduser32.NewProc("SendMessageTimeoutW")
 )
 
@@ -28,15 +29,19 @@ const (
 	SMTO_ABORTIFHUNG = 0x0002
 )
 
+// WPARAM --> UINT_PTR
+// LPARAM --> LONG_PTR
+
 // https://github.com/AllenDang/w32/blob/master/user32.go#L318
-func SendMessageTimeout(hwnd HWND, msg uint32, wParam, lParam uintptr, fuFlags, uTimeout uint32) uintptr {
+func SendMessageTimeout(hwnd HWND, msg uint32, wParam, lParam *uint16, fuFlags, uTimeout uint32) uintptr {
 	ret, _, _ := procSendMessageTimeout.Call(
 		uintptr(hwnd),
 		uintptr(msg),
-		wParam,
-		lParam,
+		uintptr(unsafe.Pointer(wParam)),
+		uintptr(unsafe.Pointer(lParam)),
 		uintptr(fuFlags),
-		uintptr(uTimeout))
+		uintptr(uTimeout),
+		0)
 
 	return ret
 }
