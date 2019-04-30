@@ -29,16 +29,13 @@ const (
 	SMTO_ABORTIFHUNG = 0x0002
 )
 
-// WPARAM --> UINT_PTR
-// LPARAM --> LONG_PTR
-
-// https://github.com/AllenDang/w32/blob/master/user32.go#L318
+// Inspired from: https://github.com/AllenDang/w32/blob/master/user32.go#L318
 func SendMessageTimeout(hwnd HWND, msg uint32, wParam, lParam *uint16, fuFlags, uTimeout uint32) uintptr {
 	ret, _, _ := procSendMessageTimeout.Call(
 		uintptr(hwnd),
 		uintptr(msg),
-		uintptr(unsafe.Pointer(wParam)),
-		uintptr(unsafe.Pointer(lParam)),
+		uintptr(unsafe.Pointer(wParam)), // cast must be inlined, read comments in unsafe.go
+		uintptr(unsafe.Pointer(lParam)), // cast must be inlined, read comments in unsafe.go
 		uintptr(fuFlags),
 		uintptr(uTimeout),
 		0)
