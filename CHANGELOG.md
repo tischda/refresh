@@ -1,5 +1,9 @@
 ## Changelog
 
+##### refresh 1.4.0 - (04 June 2019)
+
+    * Fix Panic and data race calling a Windows function in user32.dll (golang #31741) 
+
 ##### refresh 1.3.0 - (19 July 2017)
 
     * Replaced windows pop-up by sending WM_SETTINGCHANGED instead
