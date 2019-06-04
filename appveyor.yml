@@ -6,10 +6,6 @@ os: Windows Server 2012 R2
 
 environment:
   GOPATH: c:\gopath
-  matrix:
-    - GOROOT: c:\go110
-    - GOROOT: c:\go111
-    - GOROOT: c:\go112
 
 init:
   - set PATH=%GOROOT%\bin;%GOPATH%\bin;C:\mingw64\bin;%PATH%
