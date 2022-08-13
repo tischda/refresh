@@ -1,5 +1,9 @@
 ## Changelog
 
+##### refresh 1.4.x - (?)
+
+    * Use go modules
+
 ##### refresh 1.4.1 - (04 June 2019)
 
     * Fix Panic and data race calling a Windows function in user32.dll (golang #31741)
