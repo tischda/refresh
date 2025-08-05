@@ -1,10 +1,13 @@
 ﻿# refresh [![Build status](https://ci.appveyor.com/api/projects/status/axw7a46cbm0ro45q?svg=true)](https://ci.appveyor.com/project/tischda/refresh)
 
-Windows utility written in [Go](https://www.golang.org) to refresh
-environment variables.
+Windows utility written in [Go](https://www.golang.org) to notify applications of
+environment variable changes.
 
-With `refresh`, applications still need to be restarted to see the variables
-changed, but at least I can keep my session without logging out or rebooting.
+`refresh` notifies applications that environment variables have changed by sending
+them a `WM_SETTINGCHANGE` message.
+
+Some applications will still need to be restarted to become aware of the variables
+changes, but it's no more necessary to log out or reboot.
 
 
 ### Install
@@ -12,7 +15,7 @@ changed, but at least I can keep my session without logging out or rebooting.
 There are no dependencies.
 
 ~~~
-go get github.com/tischda/refresh
+go install github.com/tischda/refresh@latest
 ~~~
 
 ### Usage

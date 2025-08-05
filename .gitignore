@@ -1,4 +1,5 @@
-﻿vendor/**/
-coverage.out
+﻿coverage.out
 refresh
 refresh.exe
+releaseinfo
+dist/

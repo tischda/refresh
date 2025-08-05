@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 package main
@@ -9,31 +10,35 @@ import (
 	"os"
 )
 
+const PROG_NAME string = "refresh"
+
+// The duration of the time-out period, in milliseconds. If the message is a broadcast message,
+// each window can use the full time-out period:
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendmessagetimeouta
+const TIMEOUT_MS = 5000
+
 var version string
-var name = "refresh"
-
-var showVersion bool
-
-func init() {
-	flag.BoolVar(&showVersion, "version", false, "print version and exit")
-}
+var flag_version = flag.Bool("version", false, "print version and exit")
 
 func main() {
 	log.SetFlags(0)
 	flag.Parse()
 
-	if showVersion {
-		fmt.Printf("%s version %s\n", name, version)
-	} else {
-		ret := SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, StringToUTF16Ptr(""),
-			StringToUTF16Ptr("Environment"), SMTO_NORMAL|SMTO_ABORTIFHUNG, 5000)
+	if flag.Arg(0) == "version" || *flag_version {
+		fmt.Printf("%s version %s\n", PROG_NAME, version)
+		return
+	}
 
-		// If the function succeeds, the return value is nonzero
-		if ret == 0 {
-			fmt.Println("Refresh: Error")
-			os.Exit(1)
-		} else {
-			fmt.Println("Refresh: Success")
-		}
+	// When an application sends this message, wParam must be NULL:
+	// https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-settingchange
+	ret := SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, nil,
+		StringToUTF16Ptr("Environment"), SMTO_NORMAL|SMTO_ABORTIFHUNG, TIMEOUT_MS)
+
+	// If the function succeeds, the return value is nonzero
+	if ret == 0 {
+		fmt.Println("Refresh: Error")
+		os.Exit(1)
+	} else {
+		fmt.Println("Refresh: Success")
 	}
 }
