@@ -1,10 +1,11 @@
+//go:build windows
 // +build windows
 
 package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"testing"
@@ -22,7 +23,7 @@ func TestVersion(t *testing.T) {
 	w.Close()
 
 	// now check that version is displayed
-	captured, _ := ioutil.ReadAll(r)
+	captured, _ := io.ReadAll(r)
 	actual := string(captured)
 	expected := fmt.Sprintf("refresh version %s\n", version)
 
