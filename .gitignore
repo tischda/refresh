@@ -1,5 +1,4 @@
-﻿coverage.out
-refresh
-refresh.exe
-releaseinfo
+*.exe
+coverage.out
 dist/
+releaseinfo

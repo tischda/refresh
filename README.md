@@ -1,7 +1,10 @@
-﻿# refresh [![Build status](https://ci.appveyor.com/api/projects/status/axw7a46cbm0ro45q?svg=true)](https://ci.appveyor.com/project/tischda/refresh)
+﻿[![Build Status](https://github.com/tischda/refresh/actions/workflows/build.yml/badge.svg)](https://github.com/tischda/refresh/actions/workflows/build.yml)
+[![Test Status](https://github.com/tischda/refresh/actions/workflows/test.yml/badge.svg)](https://github.com/tischda/refresh/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tischda/refresh)](https://goreportcard.com/report/github.com/tischda/refresh)
 
-Windows utility written in [Go](https://www.golang.org) to notify applications of
-environment variable changes.
+# refresh
+
+Notify applications of Windows environment variable changes.
 
 `refresh` notifies applications that environment variables have changed by sending
 them a `WM_SETTINGCHANGE` message.
