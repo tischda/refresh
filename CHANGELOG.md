@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.4.3] - 15 November 2025
+
+    * Add goversioninfo
+
 ## [v1.4.2] - 01 August 2025
 
     * Use go modules

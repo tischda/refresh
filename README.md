@@ -1,6 +1,10 @@
 ﻿[![Build Status](https://github.com/tischda/refresh/actions/workflows/build.yml/badge.svg)](https://github.com/tischda/refresh/actions/workflows/build.yml)
 [![Test Status](https://github.com/tischda/refresh/actions/workflows/test.yml/badge.svg)](https://github.com/tischda/refresh/actions/workflows/test.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tischda/refresh)](https://goreportcard.com/report/github.com/tischda/refresh)
+[![Coverage Status](https://coveralls.io/repos/tischda/refresh/badge.svg)](https://coveralls.io/r/tischda/refresh)
+[![Linter Status](https://github.com/tischda/refresh/actions/workflows/linter.yml/badge.svg)](https://github.com/tischda/refresh/actions/workflows/linter.yml)
+[![License](https://img.shields.io/github/license/tischda/refresh)](/LICENSE)
+[![Release](https://img.shields.io/github/release/tischda/refresh.svg)](https://github.com/tischda/refresh/releases/latest)
+
 
 # refresh
 
@@ -13,16 +17,23 @@ Some applications will still need to be restarted to become aware of the variabl
 changes, but it's no more necessary to log out or reboot.
 
 
-### Install
-
-There are no dependencies.
+## Install
 
 ~~~
 go install github.com/tischda/refresh@latest
 ~~~
 
-### Usage
+## Usage
 
 ~~~
-refresh.exe
+Usage: refresh [OPTIONS]
+
+Refresh environment variables from the Windows registry.
+
+OPTIONS:
+
+  -?, --help
+          display this help message
+  -v, --version
+          print version and exit
 ~~~
